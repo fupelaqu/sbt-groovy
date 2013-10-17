@@ -1,4 +1,4 @@
-package org.softnetwork.sbt.plugins
+package com.ebiznext.sbt.plugins
 
 import sbt._
 import sbt.Keys._
