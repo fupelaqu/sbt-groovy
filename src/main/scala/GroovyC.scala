@@ -8,7 +8,7 @@ import sbt.classpath.ClasspathUtilities
 
 class GroovyC(val classpath : Seq[File], val sourceDirectory : File, val stubDirectory : File, val destinationDirectory : File) {
 
-    lazy val oldContextClassLoader = Thread.currentThread.getContextClassLoader
+    //lazy val oldContextClassLoader = Thread.currentThread.getContextClassLoader
 
     lazy val classLoader = ClasspathUtilities.toLoader(classpath)
 
@@ -32,10 +32,9 @@ class GroovyC(val classpath : Seq[File], val sourceDirectory : File, val stubDir
 
     def compile() : Unit =  {
         IO.createDirectory(sourceDirectory)
-        //IO.createDirectory(stubDirectory)
         IO.createDirectory(destinationDirectory)
         try{
-          Thread.currentThread.setContextClassLoader(classLoader)
+          //Thread.currentThread.setContextClassLoader(classLoader)
           val project = projectClass.newInstance()
           val javac = javacClass.newInstance()
           val groovyc = groovycClass.newInstance()
@@ -51,9 +50,8 @@ class GroovyC(val classpath : Seq[File], val sourceDirectory : File, val stubDir
           executeGroovycMethod.invoke(groovyc)
         }
         finally{
-          Thread.currentThread.setContextClassLoader(oldContextClassLoader)          
+          //Thread.currentThread.setContextClassLoader(oldContextClassLoader)          
         }
-        //(stubDirectory ** "*.java").get
     }
 
     lazy val setGenerateStubsSrcdirMethod = generateStubsClass.getMethod("setSrcdir", pathClass)
@@ -65,7 +63,7 @@ class GroovyC(val classpath : Seq[File], val sourceDirectory : File, val stubDir
         IO.createDirectory(sourceDirectory)
         IO.createDirectory(stubDirectory)
         try{
-          Thread.currentThread.setContextClassLoader(classLoader)
+          //Thread.currentThread.setContextClassLoader(classLoader)
           val project = projectClass.newInstance()
           val generateStubs = generateStubsClass.newInstance()
           val path = pathConstructor.newInstance(project.asInstanceOf[AnyRef])
@@ -76,7 +74,7 @@ class GroovyC(val classpath : Seq[File], val sourceDirectory : File, val stubDir
           executeGenerateStubsMethod.invoke(generateStubs)
         }
         finally{
-          Thread.currentThread.setContextClassLoader(oldContextClassLoader)          
+          //Thread.currentThread.setContextClassLoader(oldContextClassLoader)          
         }
         (stubDirectory ** "*.java").get
     }
