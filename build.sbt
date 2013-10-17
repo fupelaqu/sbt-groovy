@@ -2,7 +2,7 @@ sbtPlugin := true
 
 name := "sbt-groovy"
 
-organization := "org.softnetwork.sbt.plugins"
+organization := "com.ebiznext.sbt.plugins"
 
 version := "0.1"
 
@@ -23,7 +23,7 @@ publishArtifact in Test := false
 pomIncludeRepository := { _ => false }
 
 pomExtra := (
-  <url>https://github.com/fupelaqu/sbt-groovy</url>
+  <url>https://github.com/ebiznext/sbt-groovy</url>
   <licenses>
     <license>
       <name>MIT</name>
@@ -32,8 +32,8 @@ pomExtra := (
     </license>
   </licenses>
   <scm>
-    <url>git@github.com:fupelaqu/sbt-groovy.git</url>
-    <connection>scm:git:git@github.com:fupelaqu/sbt-groovy.git</connection>
+    <url>git@github.com:ebiznext/sbt-groovy.git</url>
+    <connection>scm:git:git@github.com:ebiznext/sbt-groovy.git</connection>
   </scm>
   <developers>
     <developer>
