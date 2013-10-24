@@ -12,7 +12,13 @@ object GroovyPlugin extends Plugin {
       libraryDependencies ++= Seq[ModuleID](
         "org.codehaus.groovy" % "groovy-all" % groovyVersion.value % Config.name,
         "org.apache.ant" % "ant" % "1.8.4" % Config.name
-      )
+      ),
+      managedClasspath in generateStubs <<= (classpathTypes in generateStubs, update) map { (ct, report) =>
+          Classpaths.managedJars(Config, ct, report)
+      },
+      managedClasspath in groovyc <<= (classpathTypes in groovyc, update) map { (ct, report) =>
+          Classpaths.managedJars(Config, ct, report)
+      }
     )
   }
 
@@ -29,7 +35,7 @@ object GroovyPlugin extends Plugin {
         if(nb > 0){
 	        val s: TaskStreams = streams.value
 	        s.log.info("Start Generating Stubs from Groovy sources")
-	        val classpath : Seq[File] = update.value.select( configurationFilter(name = "*") )
+          val classpath : Seq[File] = ((managedClasspath in generateStubs).value).files
 	        val stubDirectory : File = (sourceManaged in Compile).value / "groovy"
 	        val destinationDirectory : File = stubDirectory
 	        new GroovyC(classpath, sourceDirectory, stubDirectory, destinationDirectory).generateStubs
@@ -39,13 +45,16 @@ object GroovyPlugin extends Plugin {
         }
       },
       sourceGenerators in Compile <+= generateStubs in Compile,
+      managedClasspath in (Config, groovyc) <<= (classpathTypes in (Config, groovyc), update) map { (ct, report) =>
+          Classpaths.managedJars(Config, ct, report)
+      },
       groovyc in Compile := {
         val sourceDirectory : File = (groovySource in Compile).value
         val nb = (sourceDirectory ** "*.groovy").get.size
         if(nb > 0){
 	        val s: TaskStreams = streams.value
 	        s.log.info("Start Compiling Groovy sources")
-	        val classpath : Seq[File] = update.value.select( configurationFilter(name = "*") ) ++ Seq((classDirectory in Compile).value)
+          val classpath : Seq[File] = (((managedClasspath in groovyc).value).files) ++ Seq((classDirectory in Compile).value) ++ ((managedClasspath in Compile).value).files
 	        val stubDirectory : File = (sourceManaged in Compile).value
 	        val destinationDirectory : File = (classDirectory in Compile).value
 
@@ -78,7 +87,7 @@ object GroovyPlugin extends Plugin {
         if(nb > 0){
 	        val s: TaskStreams = streams.value
 	        s.log.info("Start Generating Stubs from Test Groovy sources")
-	        val classpath : Seq[File] = update.value.select( configurationFilter(name = "*") )
+          val classpath : Seq[File] = ((managedClasspath in generateStubs).value).files
 	        val stubDirectory : File = (sourceManaged in Test).value
 	        val destinationDirectory : File = stubDirectory
 	        new GroovyC(classpath, sourceDirectory, stubDirectory, destinationDirectory).generateStubs
@@ -94,7 +103,7 @@ object GroovyPlugin extends Plugin {
         if(nb > 0){
 	        val s: TaskStreams = streams.value
 	        s.log.info("Start Compiling Test Groovy sources")
-	        val classpath : Seq[File] = update.value.select( configurationFilter(name = "*") ) ++ Seq((classDirectory in Test).value) ++ Seq((classDirectory in Compile).value)
+          val classpath : Seq[File] = (((managedClasspath in groovyc).value).files) ++ Seq((classDirectory in Test).value) ++ Seq((classDirectory in Compile).value) ++ ((managedClasspath in Test).value).files
 	        val stubDirectory : File = (sourceManaged in Test).value
 	        val destinationDirectory : File = (classDirectory in Test).value
 
