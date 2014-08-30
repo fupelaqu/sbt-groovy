@@ -4,9 +4,9 @@ name := "sbt-groovy"
 
 organization := "org.softnetwork.sbt.plugins"
 
-version := "0.1"
+version := "0.1.1"
 
-scalaVersion := "2.10.2"
+scalaVersion := "2.10.4"
 
 publishMavenStyle := true
 

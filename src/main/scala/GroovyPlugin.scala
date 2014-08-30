@@ -22,7 +22,7 @@ object GroovyPlugin extends Plugin {
   object groovy extends Keys {
     val settings = Seq(ivyConfigurations += Config) ++ GroovyDefaults.settings ++ Seq(
       groovySource in Compile := (sourceDirectory in Compile).value / "groovy",
-      unmanagedResourceDirectories in Compile += {(groovySource in Compile).value},
+      unmanagedSourceDirectories in Compile += {(groovySource in Compile).value},
       generateStubs in Compile := {
         val sourceDirectory : File = (groovySource in Compile).value
         val nb = (sourceDirectory ** "*.groovy").get.size
@@ -71,7 +71,7 @@ object GroovyPlugin extends Plugin {
       fullClasspath <<= fullClasspath in Test,
 
       groovySource in Test := (sourceDirectory in Test).value / "groovy",
-      unmanagedResourceDirectories in Test += {(groovySource in Test).value},
+      unmanagedSourceDirectories in Test += {(groovySource in Test).value},
       generateStubs in Test := {
         val sourceDirectory : File = (groovySource in Test).value
         val nb = (sourceDirectory ** "*.groovy").get.size
