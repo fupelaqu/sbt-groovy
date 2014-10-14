@@ -1,7 +1,6 @@
 package com.ebiznext.sbt.plugins
 
 import sbt._
-import sbt.Keys._
 import java.io.File
 
 import sbt.classpath.ClasspathUtilities
@@ -52,31 +51,6 @@ class GroovyC(val classpath : Seq[File], val sourceDirectory : File, val stubDir
         finally{
           //Thread.currentThread.setContextClassLoader(oldContextClassLoader)          
         }
-    }
-
-    lazy val setGenerateStubsSrcdirMethod = generateStubsClass.getMethod("setSrcdir", pathClass)
-    lazy val setGenerateStubsDestdirMethod = generateStubsClass.getMethod("setDestdir", classOf[java.io.File])
-    lazy val setGenerateStubsProjectMethod = generateStubsClass.getMethod("setProject", projectClass)
-    lazy val executeGenerateStubsMethod = generateStubsClass.getMethod("execute")
-
-    def generateStubs() : Seq[File] =  {
-        IO.createDirectory(sourceDirectory)
-        IO.createDirectory(stubDirectory)
-        try{
-          //Thread.currentThread.setContextClassLoader(classLoader)
-          val project = projectClass.newInstance()
-          val generateStubs = generateStubsClass.newInstance()
-          val path = pathConstructor.newInstance(project.asInstanceOf[AnyRef])
-          setLocationMethod.invoke(path, sourceDirectory)
-          setGenerateStubsSrcdirMethod.invoke(generateStubs, path.asInstanceOf[AnyRef])
-          setGenerateStubsDestdirMethod.invoke(generateStubs, stubDirectory)
-          setGenerateStubsProjectMethod.invoke(generateStubs, project.asInstanceOf[AnyRef])
-          executeGenerateStubsMethod.invoke(generateStubs)
-        }
-        finally{
-          //Thread.currentThread.setContextClassLoader(oldContextClassLoader)          
-        }
-        (stubDirectory ** "*.java").get
     }
 
 }
